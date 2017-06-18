@@ -41,6 +41,15 @@ function get_avatar_path($id, $ext_id, $base_path = null, $first_div = 10000, $s
     return get_path_from_id($id, $ext_id, $base_path, $first_div, $sec_div);
 }
 
+function get_imgfile_path ($id, $ext_id, $name, $thumb = false)
+{
+    global $bb_cfg;
+    $base_path = $bb_cfg['imgs']['upload_path'];
+    $thumb  = $thumb ? '_thumb' : '';
+    $ext = isset($bb_cfg['file_id_ext'][$ext_id]) ? $bb_cfg['file_id_ext'][$ext_id] : '';
+    return "$base_path/$id/" . md5($name) . $thumb . ($ext ? ".$ext" : '');
+}
+
 function get_attach_path($id, $ext_id = '', $base_path = null, $first_div = 10000, $sec_div = 100)
 {
     global $bb_cfg;

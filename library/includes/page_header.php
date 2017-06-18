@@ -181,6 +181,7 @@ $template->assign_vars(array(
     'U_SEND_PASSWORD' => "profile.php?mode=sendpassword",
     'U_TERMS' => $bb_cfg['terms_and_conditions_url'],
     'U_TRACKER' => "tracker.php",
+    'U_GALLERY' => "gallery.php",
 
     'SHOW_SIDEBAR1' => !empty($bb_cfg['page']['show_sidebar1'][BB_SCRIPT]) || $bb_cfg['show_sidebar1_on_every_page'],
     'SHOW_SIDEBAR2' => !empty($bb_cfg['page']['show_sidebar2'][BB_SCRIPT]) || $bb_cfg['show_sidebar2_on_every_page'],

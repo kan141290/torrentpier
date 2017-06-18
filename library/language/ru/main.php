@@ -2833,3 +2833,21 @@ $lang['EMAILER_SUBJECT'] = [
     'USER_WELCOME' => 'Добро пожаловать на сайт %s',
     'USER_WELCOME_INACTIVE' => 'Добро пожаловать на сайт %s',
 ];
+
+
+//Галерея, автор Zenden
+$lang['GALLERY'] = 'Галерея';
+$lang['ALLOWED_EXT'] = 'Разрешенные форматы файлов';
+$lang['MAX_SIZE'] = 'Размер изображения в байтах';
+$lang['MAX_HEIGHT'] = 'Высота изображения в px';
+$lang['MAX_WIDTH'] = 'Ширина изображения в px';
+$lang['SCREENSHOTS'] = 'Скриншоты';
+$lang['DEL_IMGS'] = 'Изображение будет удалено вместе с миниатюрой';
+$lang['CREATE_THUMBNAIL'] = 'Создать миниатюру';
+$lang['UPLOAD_IMAGE'] = 'Загрузить';
+$lang['SELECT_IMGS'] = 'Для загрузки нескольких изображений удерживайте кнопку Ctrl';
+$lang['THUMB_HEIGHT'] = 'Высота для миниатюр';
+$lang['IMGS_LIMIT'] = 'За один раз можно загрузить не более %s картинок';
+$lang['MY_IMGS'] = 'Мои картинки';
+$lang['ALL_UPLOAD'] = 'Всего загружено';
+$lang['DIR_SIZE'] = 'Размер директории';
