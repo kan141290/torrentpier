@@ -153,6 +153,9 @@ class Upload
         if ($mode == 'attach') {
             $file_path = get_attach_path($params['topic_id']);
             return $this->_move($file_path);
+        } else if ($mode == 'imgfile') {
+            $file_path = get_imgfile_path($params['user_id'], $this->file_ext_id, $params['user_id'].$this->file['name'].$this->file['size']);
+            return $this->_move($file_path);
         } else {
             trigger_error("Invalid upload mode: $mode", E_USER_ERROR);
         }
@@ -181,5 +184,46 @@ class Upload
         @chmod($file_path, 0664);
 
         return file_exists($file_path);
+    }
+    
+    function thumb ($path)
+    {
+        global $bb_cfg, $userdata;
+
+        if (($bb_cfg['file_id_ext'][$this->file_ext_id] == 'jpg') OR ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'jpeg'))
+        {
+            $img = imagecreatefromjpeg($path);
+        }
+        elseif ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'png')
+        {
+            $img = imagecreatefrompng($path);
+        }
+        elseif ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'gif')
+        {
+            $img = imagecreatefromgif($path);
+        }
+
+        $resize        = imagesy($img)/imagesx($img);
+        $new_width    = $this->cfg['thumb_height']/$resize;
+        $out_img    = get_imgfile_path($userdata['user_id'], $this->file_ext_id, $userdata['user_id'].$this->file['name'].$this->file['size'], true);
+        $img_create    = imagecreatetruecolor($new_width, $this->cfg['thumb_height']);
+
+        imagecopyresampled($img_create, $img, 0, 0, 0, 0, $new_width, $this->cfg['thumb_height'], imagesx($img), imagesy($img));
+
+        if (($bb_cfg['file_id_ext'][$this->file_ext_id] == 'jpg') OR ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'jpeg'))
+        {
+            imagejpeg($img_create, $out_img, 75);
+        }
+        elseif ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'png')
+        {
+            imagepng($img_create, $out_img);
+        }
+        elseif ($bb_cfg['file_id_ext'][$this->file_ext_id] == 'gif')
+        {
+            imagegif($img_create, $out_img);
+        }
+
+        imagedestroy($img);
+        imagedestroy($img_create);
     }
 }

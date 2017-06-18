@@ -47,6 +47,7 @@ class Ajax
         'topic_tpl' => ['mod'],
         'group_membership' => ['mod'],
         'post_mod_comment' => ['mod'],
+        'del_imgs' => ['mod'],
 
         'avatar' => ['user'],
         'gen_passkey' => ['user'],
@@ -366,5 +367,56 @@ class Ajax
     public function sitemap()
     {
         require AJAX_DIR . '/sitemap.php';
+    }
+    
+    function del_imgs()
+    {
+        global $lang;
+
+        $img        = (string) $this->request['imgs'];
+        $all_img    = isset($this->request['all_imgs']) ? (string) $this->request['all_imgs'] : false;
+
+        $all_img    = explode(' ', $all_img);
+        $all_img    = str_replace(FULL_URL, BB_ROOT, $all_img);
+        $img        = explode(', ', $img);
+
+        foreach ($img as $data)
+        {
+            if (file_exists($data))
+            {
+                unlink($data);
+            }
+            $imgs[] = $data;
+        }
+
+        $all_img = array_diff($all_img, $imgs);
+
+        foreach($all_img as $imgs_del)
+        {
+            $ext = substr(strrchr(basename($imgs_del), '.'), 1);
+            $img_all_imgs = str_replace('.'.$ext, '_thumb.'.$ext, $imgs_del);
+
+            $imgs_all[]                = $imgs_del;
+            $imgs_tags_img[]        = '[img]'.$imgs_del.'[/img]';
+            $imgs_tags_thumb[]        = '[url='.$imgs_del.'][img]'.$img_all_imgs.'[/img][/url]';
+            $imgs_tags_spoiler[]    = '[url='.$imgs_del.'][img]'.$img_all_imgs.'[/img][/url]';
+        }
+
+        if(!empty($img_all_imgs))
+        {
+            $thumb = file_exists($img_all_imgs) ? '<input type="text" onClick="this.select();" readonly value="'.implode(' ', str_replace(BB_ROOT, FULL_URL, $imgs_tags_thumb)).'" class="mrg_4 w90"><br/>' : false;
+            $html = '<div class="tCenter" id="gen_tags">
+                    <input type="text" onClick="this.select();" name="all_imgs" id="all_imgs" readonly value="'.implode(' ', str_replace(BB_ROOT, FULL_URL, $imgs_all)).'" class="mrg_4 w90"><br/>
+                    <input type="text" onClick="this.select();" readonly value="'.implode(' ', str_replace(BB_ROOT, FULL_URL, $imgs_tags_img)).'" class="mrg_4 w90"><br/>
+                    '.$thumb.'
+                    <input type="text" onClick="this.select();" readonly value=[spoiler="'.$lang['SCREENSHOTS'].'"]'.implode(' ', str_replace(BB_ROOT, FULL_URL, $imgs_tags_spoiler)).'[/spoiler] class="mrg_4 w90">
+                </div>';
+        }
+        else
+        {
+            $html = false;
+        }
+
+        $this->response['gen_tags'] = $html;
     }
 }

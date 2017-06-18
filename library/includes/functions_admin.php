@@ -208,7 +208,7 @@ function sync($type, $id)
 
 function topic_delete($mode_or_topic_id, $forum_id = null, $prune_time = 0, $prune_all = false)
 {
-    global $lang, $log_action;
+    global $bb_cfg, $lang, $log_action;
 
     $prune = ($mode_or_topic_id === 'prune');
 
@@ -262,6 +262,33 @@ function topic_delete($mode_or_topic_id, $forum_id = null, $prune_time = 0, $pru
 
     // Get topics count
     $row = DB()->fetch_row("SELECT COUNT(*) AS topics_count FROM $tmp_delete_topics");
+    
+    if ($bb_cfg['imgs']['delete_img']) 
+    {
+        $data = DB()->fetch_row("
+            SELECT ph.post_html
+            FROM $tmp_delete_topics tmp
+            LEFT JOIN ". BB_POSTS ." p USING(topic_id)
+            LEFT JOIN ". BB_POSTS_HTML ." ph ON(p.post_id = ph.post_id)
+        ");   
+
+        preg_match_all('#<var.*?title="(.*?)"#', $data['post_html'], $img); 
+        preg_match_all('#<a href="(.*?)"#', $data['post_html'], $url_img); 
+
+        $url_img    = array_slice($url_img, 1);
+        $img        = array_slice($img, 1);
+        $url        = array_merge($url_img[0], $img[0]);
+
+        foreach(array_unique($url) as $imgs_del)
+        {
+            $path = str_replace(FULL_URL, BB_ROOT, $imgs_del);
+
+            if (file_exists($path))
+            {
+                unlink($path);
+            }
+        }
+    }
 
     if (!$deleted_topics_count = $row['topics_count']) {
         DB()->query("DROP TEMPORARY TABLE $tmp_delete_topics");
@@ -498,7 +525,7 @@ function topic_move($topic_id, $to_forum_id, $from_forum_id = null, $leave_shado
 // $exclude_first - в режиме удаления сообщений по списку исключать первое сообщение в теме
 function post_delete($mode_or_post_id, $user_id = null, $exclude_first = true)
 {
-    global $log_action;
+    global $log_action, $bb_cfg;
 
     $del_user_posts = ($mode_or_post_id === 'user');  // Delete all user posts
 
@@ -585,6 +612,32 @@ function post_delete($mode_or_post_id, $user_id = null, $exclude_first = true)
 
     // Deleted posts count
     $row = DB()->fetch_row("SELECT COUNT(*) AS posts_count FROM $tmp_delete_posts");
+    
+    if ($bb_cfg['imgs']['delete_img']) 
+    {
+        $data = DB()->fetch_row("
+            SELECT ph.post_html
+            FROM $tmp_delete_posts tmp
+            LEFT JOIN ". BB_POSTS_HTML ." ph USING(post_id)
+        ");   
+
+        preg_match_all('#<var.*?title="(.*?)"#', $data['post_html'], $img);
+        preg_match_all('#<a href="(.*?)"#', $data['post_html'], $url_img);
+
+        $url_img    = array_slice($url_img, 1);
+        $img        = array_slice($img, 1);
+        $url        = array_merge($url_img[0], $img[0]);
+
+        foreach(array_unique($url) as $imgs_del)
+        {
+            $path = str_replace(FULL_URL, BB_ROOT, $imgs_del);
+
+            if (file_exists($path))
+            {
+                unlink($path);
+            }
+        }
+    }
 
     if (!$deleted_posts_count = $row['posts_count']) {
         DB()->query("DROP TEMPORARY TABLE $tmp_delete_posts");
