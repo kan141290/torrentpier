@@ -122,7 +122,7 @@ function dis_submit_btn ()
 function debounce (el_id, time_ms)
 {
 	var $el = $('#'+el_id);
-	if ( $el.attr('disabled') == false ) {
+	if ( $el.attr('disabled') === false ) {
 		$el.attr('disabled', 1);
 		setTimeout(function(){ $el.attr('disabled', 0); }, time_ms);
 	}
@@ -130,7 +130,7 @@ function debounce (el_id, time_ms)
 
 $('#post-submit-btn').click(function(event){
     <!-- IF TOR_REQUIRED -->
-    if ( $('#file-up-btn').val() == '' ) {
+    if ( $('#file-up-btn').val() === '' ) {
         event.stopPropagation();
         alert('Вы забыли прикрепить торрент файл (кликните "загрузить файл")');
         $('#file-up-a').removeClass('med').addClass('adm').animate({fontSize: '24px'}, 200).animate({fontSize: '16px'}, 200);
@@ -158,11 +158,11 @@ function checkForm(form) {
 <!-- IF QUICK_REPLY -->
 <!-- IF IN_PM -->
 <!-- ELSE -->
-<!-- IF $bb_cfg['use_ajax_posts'] && !IS_GUEST -->
+<!-- IF $di->config->get('use_ajax_posts') && !IS_GUEST -->
 	if(form.message.value.length < 100 && submitted)
 	{
 		setTimeout(function() {
-			if ($('input[name="notify"]').attr('checked') == 'checked') {
+			if ($('input[name="notify"]').attr('checked') === 'checked') {
 				var notify = 1;
 			}
 

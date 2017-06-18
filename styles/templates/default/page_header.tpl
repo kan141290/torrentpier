@@ -6,16 +6,16 @@
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta property="og:image" content="{SITE_URL}styles/images/logo/logo.png" />
 {META}
-<link rel="stylesheet" href="{STYLESHEET}?v={$bb_cfg['css_ver']}" type="text/css">
+<link rel="stylesheet" href="{STYLESHEET}" type="text/css">
 <link rel="shortcut icon" href="{SITE_URL}favicon.ico" type="image/x-icon">
 <link rel="search" type="application/opensearchdescription+xml" href="{SITE_URL}opensearch_desc.xml" title="{SITENAME} (Forum)" />
 <link rel="search" type="application/opensearchdescription+xml" href="{SITE_URL}opensearch_desc_bt.xml" title="{SITENAME} (Tracker)" />
 
-<script type="text/javascript" src="{SITE_URL}styles/js/jquery.pack.js?v={$bb_cfg['js_ver']}"></script>
-<script type="text/javascript" src="{SITE_URL}styles/js/main.js?v={$bb_cfg['js_ver']}"></script>
+<script type="text/javascript" src="{SITE_URL}styles/js/jquery.pack.js"></script>
+<script type="text/javascript" src="{SITE_URL}styles/js/main.js"></script>
 
 <!-- IF INCLUDE_BBCODE_JS -->
-<script type="text/javascript" src="{SITE_URL}styles/js/bbcode.js?v={$bb_cfg['js_ver']}"></script>
+<script type="text/javascript" src="{SITE_URL}styles/js/bbcode.js"></script>
 <script type="text/javascript">
 	window.BB = {};
 	window.encURL = encodeURIComponent;
@@ -34,10 +34,10 @@ var hidePostImg = false;
 
 <script type="text/javascript">
 var BB_ROOT      = "{#BB_ROOT}";
-var cookieDomain = "{$bb_cfg['cookie_domain']}";
-var cookiePath   = "{$bb_cfg['script_path']}";
-var cookiePrefix = "{$bb_cfg['cookie_prefix']}";
-var cookieSecure = {$bb_cfg['cookie_secure']};
+var cookieDomain = "{$di->config->get('cookie_domain')}";
+var cookiePath   = "{$di->config->get('script_path')}";
+var cookiePrefix = "{$di->config->get('cookie_prefix')}";
+var cookieSecure = {$di->config->get('cookie_secure')};
 var LOGGED_IN    = {LOGGED_IN};
 var IWP          = 'HEIGHT=510,WIDTH=780,resizable=yes';
 var IWP_US       = 'HEIGHT=250,WIDTH=400,resizable=yes';
@@ -74,7 +74,7 @@ $(document).ready(function(){
 });
 <!-- ENDIF -->
 
-var ajax = new Ajax('{SITE_URL}{$bb_cfg['ajax_url']}', 'POST', 'json');
+var ajax = new Ajax('{SITE_URL}{$di->config->get('ajax_url')}', 'POST', 'json');
 
 function getElText (e)
 {
@@ -236,7 +236,7 @@ function go_to_page ()
 	<b>{L_OLD_BROWSER}</b>
 </div>
 <script>
-if ( (typeof(window.opera) != "undefined" && window.opera.version() < 12) || (window.attachEvent && !window.addEventListener) /* IE < 9 */ ) {
+if ( (typeof(window.opera) !== "undefined" && window.opera.version() < 12) || (window.attachEvent && !window.addEventListener) /* IE < 9 */ ) {
 	document.getElementById('old-browser-warn').style.display = '';
 }
 </script>
@@ -288,7 +288,7 @@ ajax.callback.index_data = function(data) {};
 $(document).ready(function() {
 	x = new Date();
 	tz = -x.getTimezoneOffset()/60;
-	if (tz != {BOARD_TIMEZONE})
+	if (tz !== {BOARD_TIMEZONE})
 	{
 		ajax.index_data(tz);
 	}
@@ -304,7 +304,7 @@ $(document).ready(function() {
 	</td>
 	<td style="padding: 3px;">
 		<div>
-			<form id="quick-search" action="" method="get" onsubmit="$(this).attr('action', $('#search-action').val()); if($('#search-action option:selected').attr('class') == 'hash') $('#search-text').attr('name', 'hash');">
+			<form id="quick-search" action="" method="get" onsubmit="$(this).attr('action', $('#search-action').val()); if($('#search-action option:selected').attr('class') === 'hash') $('#search-text').attr('name', 'hash');">
 				<input type="hidden" name="max" value="1" />
 				<input type="hidden" name="to" value="1" />
 				<input id="search-text" type="text" name="nm" placeholder="{L_SEARCH_S}" required />
@@ -442,7 +442,7 @@ $(document).ready(function() {
 					<tr><td>{L_UPLOADED}</td><td class="seedmed"><b>{UP_TOTAL}</b></td></tr>
 					<tr><td>{L_RELEASED}</td><td class="seedmed">{RELEASED}</td></tr>
 					<tr><td>{L_BONUS}</td><td class="seedmed">{UP_BONUS}</td></tr>
-					<!-- IF $bb_cfg['seed_bonus_enabled'] --><tr><td>{L_SEED_BONUS}</td><td><a href="profile.php?mode=bonus"><span class="points bold">{POINTS}</span></a></td></tr><!-- ENDIF -->
+					<!-- IF $di->config->get('seed_bonus_enabled') --><tr><td>{L_SEED_BONUS}</td><td><a href="profile.php?mode=bonus"><span class="points bold">{POINTS}</span></a></td></tr><!-- ENDIF -->
 				</table>
 			</div><!-- ENDIF -->
 			<!-- IF HTML_SIDEBAR_1 -->

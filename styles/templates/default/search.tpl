@@ -16,7 +16,7 @@
 <tr>
 	<td class="row1" width="50%">
 		<fieldset>
-		<legend>{L_SEARCH_WORDS}<!-- IF $bb_cfg['search_help_url'] --> <a href="{$bb_cfg['search_help_url']}">[?]</a><!-- ENDIF --></legend>
+		<legend>{L_SEARCH_WORDS}<!-- IF $di->config->get('search_help_url') --> <a href="{$di->config->get('search_help_url')}">[?]</a><!-- ENDIF --></legend>
 		<div>
 			<p class="input"><input id="text_match_input" type="text" style="width: 95%" class="post" name="{TEXT_MATCH_KEY}" size="30" /></p>
 			<p class="chbox med">{TITLE_ONLY_CHBOX}&nbsp;&nbsp;{ALL_WORDS_CHBOX}</p>
@@ -133,7 +133,7 @@ function refresh_username(selected_username)
 	opener.document.forms['post'].{INPUT_NAME}.value = selected_username;
 	opener.focus();
 	window.close();
-};
+}
 </script>
 
 <form method="post" name="search" action="{SEARCH_ACTION}">

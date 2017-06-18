@@ -1,115 +1,135 @@
 <?php
+/**
+ * MIT License
+ *
+ * Copyright (c) 2005-2017 TorrentPier
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-if (!defined('IN_AJAX')) die(basename(__FILE__));
+if (!defined('IN_AJAX')) {
+    die(basename(__FILE__));
+}
 
-global $userdata, $lang, $bb_cfg;
+global $userdata, $lang;
 
-$mode = (string) $this->request['mode'];
+/** @var \TorrentPier\Di $di */
+$di = \TorrentPier\Di::getInstance();
 
-switch ($mode)
-{
-	case 'clear_cache':
+/** @var \TorrentPier\Cache\Adapter $cache */
+$cache = $di->cache;
 
-		foreach ($bb_cfg['cache']['engines'] as $cache_name => $cache_val)
-		{
-			if (!in_array('db_sqlite', $cache_val))
-			{
-				CACHE($cache_name)->rm();
-			}
-		}
+$mode = (string)$this->request['mode'];
 
-		$this->response['cache_html'] = '<span class="seed bold">'. $lang['ALL_CACHE_CLEARED'] .'</span>';
+switch ($mode) {
+    case 'clear_cache':
 
-	break;
+        $cache->flush();
 
-	case 'clear_datastore':
+        $this->response['cache_html'] = '<span class="seed bold">' . $lang['ALL_CACHE_CLEARED'] . '</span>';
 
-		global $datastore;
+        break;
 
-		$datastore->clean();
+    case 'clear_datastore':
 
-		$this->response['datastore_html'] = '<span class="seed bold">'. $lang['DATASTORE_CLEARED'] .'</span>';
+        global $datastore;
 
-	break;
+        $datastore->clean();
 
-	case 'clear_template_cache':
+        $this->response['datastore_html'] = '<span class="seed bold">' . $lang['DATASTORE_CLEARED'] . '</span>';
 
-		global $template;
+        break;
 
-		$match = 'tpl_';
-		$match_len = strlen($match);
-		$dir = $template->cachedir;
-		$res = @opendir($dir);
-		while (($file = readdir($res)) !== false)
-		{
-			if (substr($file, 0, $match_len) === $match)
-			{
-				@unlink($dir . $file);
-			}
-		}
-		closedir($res);
+    case 'clear_template_cache':
 
-		$this->response['template_cache_html'] = '<span class="seed bold">'. $lang['ALL_TEMPLATE_CLEARED'] .'</span>';
+        global $template;
 
-	break;
+        $match = 'tpl_';
+        $match_len = strlen($match);
+        $dir = $template->cachedir;
+        $res = opendir($dir);
+        while (($file = readdir($res)) !== false) {
+            if (substr($file, 0, $match_len) === $match) {
+                unlink($dir . $file);
+            }
+        }
+        closedir($res);
 
-	case 'indexer':
+        $this->response['template_cache_html'] = '<span class="seed bold">' . $lang['ALL_TEMPLATE_CLEARED'] . '</span>';
 
-		exec("indexer --config {$bb_cfg['sphinx_config_path']} --all --rotate", $result);
+        break;
 
-		if (!is_file($bb_cfg['sphinx_config_path'].".log"))
-		{
-			file_put_contents($bb_cfg['sphinx_config_path'].".log", "####Logger from dimka3210.####".date("H:i:s", TIMENOW)."##############################\r\n\r\n\r\n\r\n", FILE_APPEND);
-		}
+    case 'indexer':
 
-		file_put_contents($bb_cfg['sphinx_config_path'].".log", "##############################".date("H:i:s", TIMENOW)."##############################\r\n", FILE_APPEND);
+        exec("indexer --config {$di->config->get('sphinx_config_path')} --all --rotate", $result);
 
-		foreach ($result as $row)
-		{
-			file_put_contents($bb_cfg['sphinx_config_path'].".log", $row."\r\n", FILE_APPEND);
-		}
+        if (!is_file($di->config->get('sphinx_config_path') . ".log")) {
+            file_put_contents($di->config->get('sphinx_config_path') . ".log", "####Logger from dimka3210.####" . date("H:i:s", TIMENOW) . "##############################\r\n\r\n\r\n\r\n", FILE_APPEND);
+        }
 
-		file_put_contents($bb_cfg['sphinx_config_path'].".log", "\r\n", FILE_APPEND);
-		file_put_contents($bb_cfg['sphinx_config_path'].".log", "\r\n", FILE_APPEND);
+        file_put_contents($di->config->get('sphinx_config_path') . ".log", "##############################" . date("H:i:s", TIMENOW) . "##############################\r\n", FILE_APPEND);
 
-		$this->response['indexer_html'] = '<span class="seed bold">'. $lang['INDEXER'] .'</span>';
+        foreach ($result as $row) {
+            file_put_contents($di->config->get('sphinx_config_path') . ".log", $row . "\r\n", FILE_APPEND);
+        }
 
-	break;
+        file_put_contents($di->config->get('sphinx_config_path') . ".log", "\r\n", FILE_APPEND);
+        file_put_contents($di->config->get('sphinx_config_path') . ".log", "\r\n", FILE_APPEND);
 
-	case 'update_user_level':
+        $this->response['indexer_html'] = '<span class="seed bold">' . $lang['INDEXER'] . '</span>';
 
-		require(INC_DIR .'functions_group.php');
+        break;
 
-		update_user_level('all');
+    case 'update_user_level':
 
-		$this->response['update_user_level_html'] = '<span class="seed bold">'. $lang['USER_LEVELS_UPDATED'] .'</span>';
+        require(INC_DIR . 'functions_group.php');
 
-	break;
+        update_user_level('all');
 
-	case 'sync_topics':
+        $this->response['update_user_level_html'] = '<span class="seed bold">' . $lang['USER_LEVELS_UPDATED'] . '</span>';
 
-		sync('topic', 'all');
-		sync_all_forums();
+        break;
 
-		$this->response['sync_topics_html'] = '<span class="seed bold">'. $lang['TOPICS_DATA_SYNCHRONIZED'] .'</span>';
+    case 'sync_topics':
 
-	break;
+        sync('topic', 'all');
+        sync_all_forums();
 
-	case 'sync_user_posts':
+        $this->response['sync_topics_html'] = '<span class="seed bold">' . $lang['TOPICS_DATA_SYNCHRONIZED'] . '</span>';
 
-		sync('user_posts', 'all');
+        break;
 
-		$this->response['sync_user_posts_html'] = '<span class="seed bold">'. $lang['USER_POSTS_COUNT_SYNCHRONIZED'] .'</span>';
+    case 'sync_user_posts':
 
-	break;
+        sync('user_posts', 'all');
 
-	case 'unlock_cron':
+        $this->response['sync_user_posts_html'] = '<span class="seed bold">' . $lang['USER_POSTS_COUNT_SYNCHRONIZED'] . '</span>';
 
-		cron_enable_board();
+        break;
 
-		$this->response['unlock_cron_html'] = '<span class="seed bold">'. $lang['ADMIN_UNLOCKED'] .'</span>';
+    case 'unlock_cron':
 
-	break;
+        cron_enable_board();
+
+        $this->response['unlock_cron_html'] = '<span class="seed bold">' . $lang['ADMIN_UNLOCKED'] . '</span>';
+
+        break;
 }
 
 $this->response['mode'] = $mode;

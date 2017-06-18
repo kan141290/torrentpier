@@ -1,9 +1,17 @@
 TorrentPier
 ======================
-[![Join the chat at https://gitter.im/torrentpier/torrentpier](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/torrentpier/torrentpier?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8b79a63a6d464b81bf0a39923f42bdf5)](https://www.codacy.com/app/Exile37/torrentpier?utm_source=github.com&utm_medium=referral&utm_content=torrentpier/torrentpier&utm_campaign=badger)
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/torrentpier/localized.svg)](https://crowdin.com/project/torrentpier) [![Join the chat at https://gitter.im/torrentpier/torrentpier](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/torrentpier/torrentpier?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+## Current status
+
+TorrentPier is currently in active development. The goal is to remove all legacy code and rewrite existing to modern standards. If you want to go deep on the code, check out https://github.com/torrentpier/torrentpier/issues and go from there. The documentation will be translated into english in the near future, currently russian is the main language of project.
+
+## About
+
 TorrentPier - движок торрент-трекера, написанный на php. Высокая скорость работы, простота модификации, устойчивость к высоким нагрузкам, в том числе и поддержка альтернативных анонсеров (например, Ocelot). Помимо этого, крайне развитый официальный форум поддержки, где помимо прочего можно испытать движок в работе на демо-версии, не устанавливая его, а также получить любую другую интересующую вас информацию и скачать моды.
 
-## Установка
+## Installation
 
 Для установки вам необходимо выполнить несколько простых шагов:
 
@@ -26,7 +34,6 @@ TorrentPier - движок торрент-трекера, написанный �
 
 Исходя из настроек вашего сервера, устанавливаем рекомендуемые права доступа (chmod) на указанные папки **777**, а на файлы внутри этих папок (кроме файлов **.htaccess** и **.keep**) **666**:
 - data/avatars
-- data/old_files
 - data/torrent_files
 - internal_data/ajax_html
 - internal_data/atom
@@ -37,7 +44,7 @@ TorrentPier - движок торрент-трекера, написанный �
 
 ## Необходимая версия php
 
-Минимально поддерживаемой версией в настоящий момент является 5.3. Существует поддержка вплоть до версии 5.5 (в данной версии в логах будет уведомление об использовании устаревших функций). Версия php 5.6 в настоящее время движком не поддерживается и его работа на ней не гарантируется. Мы делаем все возможное чтобы в самое ближайшее время добавить его поддержку.
+Минимально поддерживаемой версией в настоящий момент является 7.0.8. Существует поддержка вплоть до версии 7.1.
 
 ## Необходимые настройки php
 

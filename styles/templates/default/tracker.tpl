@@ -131,17 +131,17 @@ var FSN = {
 
 		$('#fs-sel-cat').bind('change', function(){
 			var i = $(this).val();
-			if (FSN.sel_width == null) {
+			if (FSN.sel_width === null) {
 				FSN.sel_width = $select.width() + 4;
 			}
-			if (i == 'all') {
+			if (i === 'all') {
 				var fs_html = FSN.fs_all;
 			}
 			else {
 				var fs_html = '<optgroup label="'+ FSN.fs_lb[i] +'">'+ FSN.fs_og[i] +'</optgroup>';
 			}
 			$select.html(fs_html).focus();
-			if (i == 'all') {
+			if (i === 'all') {
 				$('#fs-nav-menu').show();
 			}
 			else {
@@ -285,7 +285,7 @@ $(function(){
 					<p class="chbox med">
 						{ALL_WORDS_CHBOX}
 						&middot; <a class="med" href="#" onclick="return get_fs_link();">{L_SEL_CHAPTERS}</a>
-						<!-- IF $bb_cfg['search_help_url'] --> &middot; <a class="med" href="{$bb_cfg['search_help_url']}">{L_SEARCH_HELP_URL}</a><!-- ENDIF -->
+						<!-- IF $di->config->get('search_help_url') --> &middot; <a class="med" href="{$di->config->get('search_help_url')}">{L_SEARCH_HELP_URL}</a><!-- ENDIF -->
 					</p>
 				</div>
 				</fieldset>
@@ -411,7 +411,7 @@ $(function(){
 	<!-- ENDIF -->
 	<td class="row4 small nowrap">
 		<u>{tor.TOR_SIZE_RAW}</u>
-		<!-- IF not tor.TOR_FROZEN --><a class="small tr-dl" title="{L_DOWNLOAD}" href="{DOWNLOAD_URL}{tor.ATTACH_ID}">{tor.TOR_SIZE}</a> <!-- IF MAGNET_LINKS --><span title="{L_MAGNET}">{tor.MAGNET}</span><!-- ENDIF --><!-- ELSE -->
+		<!-- IF not tor.TOR_FROZEN --><a class="small tr-dl" title="{L_DOWNLOAD}" href="{DOWNLOAD_URL}{tor.TOPIC_ID}">{tor.TOR_SIZE}</a> <!-- IF MAGNET_LINKS --><span title="{L_MAGNET}">{tor.MAGNET}</span><!-- ENDIF --><!-- ELSE -->
 		{tor.TOR_SIZE}<!-- ENDIF -->
 	</td>
 	<td class="row4 seedmed" title="{tor.SEEDS_TITLE}"><b>{tor.SEEDS}</b></td>
@@ -486,7 +486,7 @@ $(function(){
 
 	$('#fs-main').bind('change', function(){
 		var fs_val = $('#fs-main').val();
-		if (fs_val != null) {
+		if (fs_val !== null) {
 			if (fs_val.length > {MAX_FS}) {
 				alert('{L_MAX_FS}');
 				$('#fs-main').val( fs_last_val );
@@ -513,7 +513,7 @@ function get_fs_link ()
 	var fs_url = '{TRACKER_URL}';
 	var fs_val = $('#fs-main').val();
 
-	if (fs_val == null) {
+	if (fs_val === null) {
 		alert('{L_NOT_SEL_CHAPTERS}');
 	}
 	else {

@@ -1,99 +1,111 @@
 <?php
+/**
+ * MIT License
+ *
+ * Copyright (c) 2005-2017 TorrentPier
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 define('BB_SCRIPT', 'dl');
-define('NO_GZIP', true);
-define('BB_ROOT',  './');
-require(BB_ROOT .'common.php');
+define('BB_ROOT', './');
+require_once __DIR__ . '/common.php';
 
-if (!$topic_id = (int) request_var('t', 0))
-{
-	bb_simple_die('Ошибочный запрос: не указан topic_id'); // TODO
+/** @var \TorrentPier\Di $di */
+$di = \TorrentPier\Di::getInstance();
+
+/** @var \TorrentPier\Db\Adapter $db */
+$db = $di->db;
+
+$topic_id = $di->request->query->getInt('t');
+
+if (!$topic_id) {
+    bb_simple_die($di->translator->trans('Invalid request: not specified %data%', ['%data%' => 'topic_id']));
 }
 
 $user->session_start();
 
-global $bb_cfg, $lang, $userdata;
+global $userdata;
 
-// $t_data
-$sql = "
-		SELECT t.*, f.*
-		FROM ". BB_TOPICS ." t, ". BB_FORUMS ." f
-		WHERE t.topic_id = $topic_id
-			AND f.forum_id = t.forum_id
-		LIMIT 1
-";
-if (!$t_data = DB()->fetch_row($sql))
-{
-	bb_simple_die('Файл не найден [DB]'); // TODO
-}
-if (!$t_data['attach_ext_id'])
-{
-	bb_simple_die('Файл не найден [EXT_ID]'); // TODO
+// TODO: явное указание полей, для send_torrent_with_passkey и auth нужен рефакторинг
+$t_data = $db->select(['t' => BB_TOPICS], function (\Zend\Db\Sql\Select $select) use ($topic_id) {
+    $select->where(function (\Zend\Db\Sql\Where $where) use ($topic_id) {
+        $where->equalTo('topic_id', $topic_id);
+        $where->greaterThan('attach_ext_id', 0);
+    });
+    $select->join(['f' => BB_FORUMS], 'f.forum_id = t.forum_id');
+})->one();
+
+if (!$t_data) {
+    bb_simple_die($di->translator->trans('File not found: %location%', ['%location%' => 'database']));
 }
 
 // Auth check
-$is_auth = auth(AUTH_ALL, $t_data['forum_id'], $userdata, $t_data);
-$guest_allow = false;
-if (!IS_GUEST) $guest_allow = true;
-if (IS_GUEST && $bb_cfg['guest_tracker']) $guest_allow = true;
-if ($t_data['attach_ext_id'] != 8 && !$is_auth['auth_download']) login_redirect($bb_cfg['dl_url'] . $topic_id);
-if ($t_data['attach_ext_id'] == 8 && (!$is_auth['auth_download'] || !$guest_allow)) login_redirect($bb_cfg['dl_url'] . $topic_id);
-
-
-// Проверка рефёрера (не качать с других сайтов)
-$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
-if (!preg_match("/". $bb_cfg['server_name']."/", $referer)) exit;
-
-DB()->sql_query('UPDATE ' . BB_TOPICS . ' SET download_count = download_count + 1 WHERE topic_id = ' . (int) $t_data['topic_id']);
-
-// Captcha for guest
-if (IS_GUEST && !bb_captcha('check'))
-{
-	global $template;
-
-	$redirect_url = isset($_POST['redirect_url']) ? $_POST['redirect_url'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/');
-	$message = '<form action="'. DOWNLOAD_URL . $attachment['attach_id'] .'" method="post">';
-	$message .= $lang['CAPTCHA'].':';
-	$message .= '<div  class="mrg_10" align="center">'. bb_captcha('get') .'</div>';
-	$message .= '<input type="hidden" name="redirect_url" value="'. $redirect_url .'" />';
-	$message .= '<input type="submit" class="bold" value="'. $lang['SUBMIT'] .'" /> &nbsp;';
-	$message .= '<input type="button" class="bold" value="'. $lang['GO_BACK'] .'" onclick="document.location.href = \''. $redirect_url .'\';" />';
-	$message .= '</form>';
-
-	$template->assign_vars(array(
-		'ERROR_MESSAGE' => $message,
-	));
-
-	require(PAGE_HEADER);
-	require(PAGE_FOOTER);
+$is_auth = auth(AUTH_ALL, $t_data->forum_id, $userdata, $t_data);
+if (!IS_GUEST) {
+    if (!$is_auth['auth_download']) {
+        login_redirect($di->config->get('dl_url') . $topic_id);
+    }
+} elseif (!$di->config->get('tracker.guest_tracker')) {
+    login_redirect($di->config->get('dl_url') . $topic_id);
 }
 
-$t_data['user_id'] = $userdata['user_id'];
-$t_data['is_am']   = IS_AM;
+// Downloads counter
+$db->increment(BB_TOPICS, 'attach_dl_cnt', ['topic_id' => $topic_id]);
 
-//die(var_dump($t_data));
+// Captcha for guest
+if (IS_GUEST && !bb_captcha('check')) {
+    $redirectUrl = $di->request->get('redirect_url');
+    $redirectTemplate = $redirectUrl ? $redirectUrl : $di->request->server->get('HTTP_REFERER', '/');
+
+    $content = $di->view->make('dl', [
+        'captcha' => bb_captcha('get'),
+        'download_url' => DOWNLOAD_URL . $topic_id,
+        'redirect_template' => $redirectTemplate,
+    ]);
+
+    /** @var \Symfony\Component\HttpFoundation\Response $response */
+    $response = \Symfony\Component\HttpFoundation\Response::create();
+    $response->setContent($content);
+
+    $response->prepare($di->request);
+    $response->send();
+}
 
 // Torrent
-if ($t_data['attach_ext_id'] == 8)
-{
-	if (!(isset($_GET['original']) && !IS_USER))
-	{
-		require(INC_DIR .'functions_torrent.php');
-		send_torrent_with_passkey($t_data);
-	}
+if ($t_data->attach_ext_id == 8) {
+    require(INC_DIR . 'functions_torrent.php');
+    send_torrent_with_passkey($t_data);
 }
 
 // All other
-$file_path = get_attach_path($topic_id, $t_data['attach_ext_id']);
+$file_path = get_attach_path($topic_id, $t_data->attach_ext_id);
 
-if (($file_contents = @file_get_contents($file_path)) === false)
-{
-	bb_simple_die("Файл не найден [HDD]"); // TODO
+if (!file_exists($file_path)) {
+    bb_simple_die($di->translator->trans('File not found: %location%', ['%location%' => '[HDD]']));
 }
 
-$send_filename = "t-$topic_id.". $bb_cfg['file_id_ext'][$t_data['attach_ext_id']];
+$send_filename = "t-$topic_id." . $di->config->get('file_id_ext')[$t_data->attach_ext_id];
 
-header("Content-Type: application/x-download; name=\"$send_filename\"");
-header("Content-Disposition: attachment; filename=\"$send_filename\"");
+/** @var \Symfony\Component\HttpFoundation\BinaryFileResponse $response */
+$response = \Symfony\Component\HttpFoundation\BinaryFileResponse::create();
+$response->setFile($file_path, 'attachment; filename=' . $send_filename);
 
-bb_exit($file_contents);
+$response->prepare($di->request);
+$response->send();

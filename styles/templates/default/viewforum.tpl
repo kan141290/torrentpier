@@ -89,7 +89,7 @@ function tte_submit (mode)
 	var $tt_td = $('#tte-'+topic_id);
 	var topic_title = $('.tt-edit-input', $tt_td).val();
 
-	if (mode == 'save') {
+	if (mode === 'save') {
 		ajax.edit_topic_title(topic_id, topic_title);
 	}
 	else {
@@ -119,9 +119,9 @@ function mod_action (mode)
 		alert('{L_NONE_SELECTED}');
 		return false;
 	}
-	if(mode == 'tor_status'){
+	if(mode === 'tor_status'){
 		status = $('#st option:selected').val();
-		if(status == '-1'){
+		if(status === '-1'){
 			alert('{L_TOR_STATUS_NOT_SELECT}');
 			return false;
 		}
@@ -478,7 +478,7 @@ td.topic_id { cursor: pointer; }
 	<!-- BEGIN tor -->
 		<div title="{L_DL_TORRENT}">
 			<div><span class="seedmed" title="Seeders"><b>{t.tor.SEEDERS}</b></span><span class="med"> | </span><span class="leechmed" title="Leechers"><b>{t.tor.LEECHERS}</b></span></div>
-			<div style="padding-top: 2px" class="small"><!-- IF t.TOR_FROZEN -->{t.tor.TOR_SIZE}<!-- ELSE --><a href="{DOWNLOAD_URL}{t.tor.ATTACH_ID}" class="small" style="text-decoration: none">{t.tor.TOR_SIZE}</a> <!-- IF MAGNET_LINKS -->{t.tor.MAGNET}<!-- ENDIF --><!-- ENDIF --></div>
+			<div style="padding-top: 2px" class="small"><!-- IF t.TOR_FROZEN -->{t.tor.TOR_SIZE}<!-- ELSE --><a href="{DOWNLOAD_URL}{t.TOPIC_ID}" class="small" style="text-decoration: none">{t.tor.TOR_SIZE}</a> <!-- IF MAGNET_LINKS -->{t.tor.MAGNET}<!-- ENDIF --><!-- ENDIF --></div>
 		</div>
 	<!-- END tor -->
 	</td>
@@ -644,7 +644,7 @@ td.topic_id { cursor: pointer; }
 <!-- IF IS_ADMIN -->
 <div class="med tCenter">{L_ADMIN}:
 <a href="{POSTING_URL}?mode=new_rel&amp;f={FORUM_ID}&amp;edit_tpl=1" class="bold" target="_blank">{L_DESIGNER}</a>&nbsp;&middot;
-<a href="admin/admin_log.php?f={FORUM_ID}&amp;db={$bb_cfg['log_days_keep']}" target="_blank">{L_FORUM_LOGS}</a>&nbsp;&middot;
+<a href="admin/admin_log.php?f={FORUM_ID}&amp;db={$di->config->get('log_days_keep')}" target="_blank">{L_FORUM_LOGS}</a>&nbsp;&middot;
 <a href="admin/admin_forums.php?mode=editforum&amp;f={FORUM_ID}" target="_blank">{L_EDIT}</a>&nbsp;&middot;
 <a href="admin/admin_forumauth.php?f={FORUM_ID}" target="_blank">{L_PERMISSIONS}</a>&nbsp;&middot;
 <a href="admin/admin_forums.php?mode=deleteforum&amp;f={FORUM_ID}" target="_blank">{L_DELETE}</a>

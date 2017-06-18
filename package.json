@@ -1,0 +1,25 @@
+{
+  "name": "torrentpier",
+  "version": "2.2.0",
+  "description": "TorrentPier. Bittorrent-tracker engine",
+  "main": "build/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/torrentpier/torrentpier.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/torrentpier/torrentpier/issues"
+  },
+  "homepage": "https://torrentpier.me/",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
