@@ -1,8 +1,61 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2005-2017 TorrentPier
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-body { background: #E5E5E5; min-width: 10px; }
-#body_container { background: #E5E5E5; padding: 0 6px 4px; }
-h1, h2, h3 { margin: 0.8em 0; font-size: 16px; }
-h4 { margin: 0.1em 0.2em; color: #273F61; font-size: 11px; font-weight: bold; }
-h5 { margin: 0.1em 0.6em; color: #333399; font-family: "Courier New"; }
-h6 { margin: 0.3em 0.6em; color: #444444; line-height: 100%;  }
-* html table.forumline { width: 97%; }
+body {
+  background: #E5E5E5;
+  min-width: 10px;
+}
+
+#body_container {
+  background: #E5E5E5;
+  padding: 0 6px 4px;
+}
+
+h1, h2, h3 {
+  margin: 0.8em 0;
+  font-size: 16px;
+}
+
+h4 {
+  margin: 0.1em 0.2em;
+  color: #273F61;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+h5 {
+  margin: 0.1em 0.6em;
+  color: #333399;
+  font-family: "Courier New", serif;
+}
+
+h6 {
+  margin: 0.3em 0.6em;
+  color: #444444;
+  line-height: 100%;
+}
+
+* html table.forumline {
+  width: 97%;
+}

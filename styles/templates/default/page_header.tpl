@@ -7,7 +7,7 @@
 <meta property="og:image" content="{SITE_URL}styles/images/logo/logo.png" />
 {META}
 <link rel="stylesheet" href="{STYLESHEET}?v={$bb_cfg['css_ver']}" type="text/css">
-<link rel="shortcut icon" href="{SITE_URL}favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="{SITE_URL}favicon.png" type="image/x-icon">
 <link rel="search" type="application/opensearchdescription+xml" href="{SITE_URL}opensearch_desc.xml" title="{SITENAME} (Forum)" />
 <link rel="search" type="application/opensearchdescription+xml" href="{SITE_URL}opensearch_desc_bt.xml" title="{SITENAME} (Tracker)" />
 
@@ -67,7 +67,7 @@ $(document).ready(function(){
 	');
 	$('#jumpbox-container').one('click', function(){
 		$('#jumpbox-title').html('&nbsp;&nbsp; {L_LOADING} ... &nbsp;');
-		var jumpbox_src = '{AJAX_HTML_DIR}' + ({LOGGED_IN} ? 'jumpbox_user.html' : 'jumpbox_guest.html');
+		var jumpbox_src = '{AJAX_HTML_DIR}' + ({LOGGED_IN} ? '/jumpbox_user.html' : '/jumpbox_guest.html');
 		$(this).load(jumpbox_src);
 		$('#jumpbox-submit').click(function(){ window.location.href='{FORUM_URL}'+$('#jumpbox').val(); });
 	});
@@ -492,12 +492,6 @@ $(document).ready(function() {
 				</tr>
 			</table>
 		</div>
-
-<!-- IF AD_BLOCK_200 -->
-	<div id="ad-200">{AD_BLOCK_200}</div><!--/ad-200-->
-<!-- ELSEIF AD_BLOCK_100 -->
-	<div id="ad-100">{AD_BLOCK_100}</div><!--/ad-100-->
-<!-- ENDIF / AD_BLOCK_100 -->
 
 <!--=======================-->
 <!-- ENDIF / COMMON_HEADER -->

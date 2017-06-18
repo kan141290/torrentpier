@@ -1,79 +1,98 @@
-TorrentPier II
-======================
+<p align="center"><a href="https://torrentpier.me/"><img src="https://torrentpier.me/forum/styles/default/xenforo/bull-logo.svg" width="400px" /></a></p>
+<p align="center">
+    <a href="http://torrentpier.herokuapp.com/"><img src="http://torrentpier.herokuapp.com/badge.svg" alt="Slack"></a>
+    <a href="https://crowdin.com/project/torrentpier"><img src="https://d322cqt584bo4o.cloudfront.net/torrentpier/localized.svg" alt="Crowdin"></a>
+    <a href="https://scrutinizer-ci.com/g/torrentpier/torrentpier/"><img src="https://img.shields.io/scrutinizer/g/torrentpier/torrentpier.svg" alt="Scrutinizer"></a>
+    <a href="https://www.codacy.com/app/Exile37/torrentpier"><img src="https://img.shields.io/codacy/grade/8b79a63a6d464b81bf0a39923f42bdf5/master.svg" alt="Codacy"></a>
+    <br />
+    <a href="https://insight.sensiolabs.com/projects/1a5d5098-e0b0-45c2-816a-020dfd50acaf"><img src="https://img.shields.io/sensiolabs/i/1a5d5098-e0b0-45c2-816a-020dfd50acaf.svg" alt="SensioLabs Insight"></a>
+    <a href="https://travis-ci.org/torrentpier/torrentpier"><img src="https://img.shields.io/travis/torrentpier/torrentpier/master.svg" alt="Travis"></a>
+    <a href="https://circleci.com/gh/torrentpier/torrentpier"><img src="https://img.shields.io/circleci/project/github/torrentpier/torrentpier/master.svg" alt="CircleCI"></a>
+    <a href="https://codecov.io/gh/torrentpier/torrentpier"><img src="https://img.shields.io/codecov/c/github/torrentpier/torrentpier/master.svg" alt="Codecov"></a>
+</p>
 
-[![Join the chat at https://gitter.im/torrentpier/torrentpier](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/torrentpier/torrentpier?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## About TorrentPier
 
-TorrentPier II - движок торрент-трекера, написанный на php. Высокая скорость работы, простота модификации, устойчивость к высоким нагрузкам, в том числе и поддержка альтернативных анонсеров (например, Ocelot). Помимо этого, крайне развитый официальный форум поддержки, где помимо прочего можно испытать движок в работе на демо-версии, не устанавливая его, а также получить любую другую интересующую вас информацию и скачать моды.
+TorrentPier — bull-powered BitTorrent tracker engine, written in php. High speed, simple modification, high load 
+architecture, built-in support for alternative compiled announcers (Ocelot, XBT). In addition we have very helpful 
+[official support forum](https://torrentpier.me/forum), where among other things it is possible to test the live 
+demo, get any support and download modifications for engine.
 
-## Установка
+## Current status
 
-Для установки вам необходимо выполнить несколько простых шагов:
+TorrentPier is currently in active development. The goal is to remove all legacy code and rewrite existing to 
+modern standards. If you want to go deep on the code, check our [issues](https://github.com/torrentpier/torrentpier/issues) 
+and go from there. The documentation will be translated into english in the near future, currently russian is the main language of it.
 
-1. Распаковываем на сервер содержимое скачанной вами папки
+## Requirements
 
-2. Создаем базу данных, в которую при помощи phpmyadmin (или любого другого удобного инструмента) импортируем дамп, расположенный в папке **install/sql/mysql.sql**
-3. Правим файл конфигурации **library/config.php**, загруженный на сервер:
-> ***'db1' => array('localhost', 'tp_215', 'user', 'pass', $charset, $pconnect)***    
-В данной строке изменяем данные входа в базу данных    
-***$domain_name = 'torrentpier.me';***    
-В данной строке указываем ваше доменное имя. Остальные правки в файле вносятся по усмотрению, исходя из необходимости из внесения (ориентируйтесь на описания, указанные у полей).
+* Apache / nginx
+* MySQL / MariaDB / Percona
+* PHP: 5.6 / 7.0 / 7.1
+* PHP Extensions: bcmath, intl, tidy (optional)
 
-4. Редактируем указанные файлы:
- + **favicon.ico** (меняем на свою иконку, если есть)  
- + **robots.txt** (меняем адреса в строках **Host** и **Sitemap** на свои)
- + **opensearch_desc.xml** (меняем описание и адрес на свои)
- + **opensearch_desc_bt.xml** (меняем описание и адрес на свои)
+## Installation
 
-## Права доступа на папки и файлы
+For installation you need to follow a few simple steps:
 
-Исходя из настроек вашего сервера, устанавливаем рекомендуемые права доступа (chmod) на указанные папки **777**, а на файлы внутри этих папок (кроме файлов **.htaccess** и **.keep**) **666**:
-- data/avatars
-- data/old_files
-- data/torrent_files
-- internal_data/ajax_html
-- internal_data/atom
-- internal_data/cache
-- internal_data/log
-- internal_data/sitemap
-- internal_data/triggers
+1. Unpack to the server the contents of the downloaded folder
+1. Install [Composer](https://getcomposer.org/) and run `composer install` on the downloaded directory
+1. Create database and import dump located at **install/sql/mysql.sql**
+1. Edit database configuration settings in the configuration file or a local copy (see below)
+1. Edit domain name in the configuration file or a local copy (see below)
+1. Edit this files:
+   1. **favicon.png** (change on your own)
+   1. **robots.txt** (change the addresses in lines **Host** and **Sitemap** on your own)
+   1. **opensearch_desc.xml** (change the description and address on your own)
+   1. **opensearch_desc_bt.xml** (change the description and address on your own)
+1. Log in to the forum with admin/admin login/password and finish setting up via admin panel
 
-## Необходимая версия php
+## Access rights on folders and files
 
-Минимально поддерживаемой версией в настоящий момент является 5.3. Существует поддержка вплоть до версии 5.5 (в данной версии в логах будет уведомление об использовании устаревших функций). Версия php 5.6 в настоящее время движком не поддерживается и его работа на ней не гарантируется. Мы делаем все возможное чтобы в самое ближайшее время добавить его поддержку.
+You must provide write permissions to the specified folders:
+* `data/avatars`
+* `data/torrent_files`
+* `internal_data/ajax_html`
+* `internal_data/atom`
+* `internal_data/cache`
+* `internal_data/log`
+* `internal_data/triggers`
+* `sitemap`
 
-## Необходимые настройки php
+The specific settings depend on the server you are using, but in general case we recommend chmod 0755 for folders, 
+and chmod 0644 for files in them. If you are not sure, leave it as is.
 
-    mbstring.internal_encoding = UTF-8
-    magic_quotes_gpc = Off
-Внести данные настройки необходимо в файл **php.ini**. Их вам может установить ваш хостер по запросу, если у вас возникают какие-либо проблемы с их самостоятельной установкой. Впрочем, эти настройки могут быть установлены на сервере по-умолчанию, поэтому их внесение требуется исключительно по необходимости.
+## The recommended way to run cron.php
 
-## Необходимые модули php
+For significant tracker speed increase may be required to replace built-in cron.php by operating system daemon. For more 
+information about that you can read [this thread](https://torrentpier.me/forum/threads/52/) on our support forum.
 
-    php5-tidy
-Начиная с версии 2.0.9 (ревизия 592 в старой нумерации) данный модуль не является обязательным, но его установка крайне рекомендуется для повышения качества обработки html-кода тем и сообщений пользователей. 
+## Local configuration copy
 
-## Рекомендуемый способ запуска cron.php
+You can override the settings using one of these methods: configuration file **library/config.local.php** and the environment
+file **.env**. Both files are created by copying the appropriate .example templates without extension. Local configuration files 
+should not be available for reading to anyone by setting up access rights for your web server.
 
-Для значительного ускорения работы трекера может потребоваться отвязка встроенного форумного крона. С более подробной информацией об отвязке крона, вы можете ознакомиться в данной теме https://torrentpier.me/threads/52/ на нашем форуме поддержки.
+## Ocelot installation
 
-## Локальный файл конфигурации
+We have built-in support for alternate compiled announcer — Ocelot. The configuration is in the file **library/config.php**,
+the announcer is in the repository [torrentpier/ocelot](https://github.com/torrentpier/ocelot). You can read assembly instructions
+on his repository or in [this thread](https://torrentpier.me/forum/threads/26078/) on our support forum.
 
-Начиная с ревизии 599 была добавлена поддерка автоматического подключения файла config.local.php, при создании его вами. В данном файле вы можете переопределять настройки файла config.php для конкретного сервера, на котором запущен трекер или в целом менять стандартные значения файла config.php, для более простого обновления файлов движка в дальнейшем.
+## Official documentation
 
-## Установка Ocelot
+Documentation for TorrentPier can be found on the [TorrentPier docs website](https://docs.torrentpier.me).
 
-В движок встроена по-умолчанию поддержка альтернативного компилируемого анонсера - Ocelot. Настройка производится в файле **library/config.php**, сам анонсер находится в репозитории https://github.com/torrentpier/ocelot
+## Contributing
 
-Инструкция по сборке приведена на нашем форуме: https://torrentpier.me/threads/sborka-ocelot-pod-debian-7-1.26078/
-Для работы анонсера требуется замена двух таблиц в базе данных - дамп в файле: **install/sql/ocelot.sql**
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for 
+submitting pull requests to us. But we are always ready to renew your pull-request for compliance with 
+these requirements. Just send it.
 
-## Папка install
+## Versioning
 
-В корне движка присутствует папка **install**, в которой находятся служебные файлы, необходимые для его установки (дамп базы, примеры конфигов) и обновления (дамперы, скрипты конвертации). Доступ к данной папке по-умолчанию закрыт, но если ее присутствие вам мешает - вы можете ее удалить. На файлы **README.md** и **CONTRIBUTORS.md** это также распространяется.
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/torrentpier/torrentpier/tags). 
 
-## Полезные ссылки
+## License
 
-+ Наш форум https://torrentpier.me/
-+ Центр загрузки https://get.torrentpier.me/
-+ Часто задаваемые вопросы https://faq.torrentpier.me/
-+ Где задать вопрос https://torrentpier.me/forums/10/
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
